@@ -6,7 +6,7 @@ with open("input.txt", "r") as f:
     text = f.read()
 
 # Set up font and image size
-font_path = r"C:\Users\Saif Islam\Desktop\New folder\ARIALNB.TTF"
+font_path = r"path_of_font"
 font_size = 24
 img_width = 1200
 img_height = 630
