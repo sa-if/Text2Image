@@ -1,55 +1,36 @@
-from PIL import Image, ImageDraw, ImageFont, ImageFilter
+from PIL import Image, ImageDraw, ImageFont
+import textwrap
 
-def create_image(text, font_path, font_size, width, height, bg_color=(255, 255, 255), text_color=(0, 0, 0), line_width=0, line_color=(0, 0, 0), blur_radius=0, image_filter=None):
-    # Create a blank image with the given width and height
-    image = Image.new('RGB', (width, height), color=bg_color)
-    
-    # Create a drawing object
-    draw = ImageDraw.Draw(image)
-    
-    # Load the font
-    font = ImageFont.truetype(font_path, font_size)
-    
-    # Calculate the size of the text
-    text_width, text_height = draw.textsize(text, font=font)
-    
-    # Calculate the position of the text
-    x = (width - text_width) / 2
-    y = (height - text_height) / 2
-    
-    # Draw the text
-    if line_width > 0:
-        draw.text((x, y), text, font=font, fill=bg_color)
-        for i in range(1, line_width+1):
-            draw.text((x-i, y), text, font=font, fill=line_color)
-            draw.text((x+i, y), text, font=font, fill=line_color)
-            draw.text((x, y-i), text, font=font, fill=line_color)
-            draw.text((x, y+i), text, font=font, fill=line_color)
-    else:
-        draw.text((x, y), text, font=font, fill=text_color)
-    
-    # Apply image filter
-    if image_filter is not None:
-        image = image.filter(image_filter)
-    
-    # Apply image blur
-    if blur_radius > 0:
-        image = image.filter(ImageFilter.GaussianBlur(radius=blur_radius))
-    
-    return image
+# Load text from input.txt file
+with open("input.txt", "r") as f:
+    text = f.read()
 
-# Example usage
-text = "Hello, World!"
-font_path = "/path/to/font.ttf"
-font_size = 40
-width = 400
-height = 200
-bg_color = (255, 255, 255)
-text_color = (0, 0, 0)
-line_width = 2
-line_color = (255, 0, 0)
-blur_radius = 5
-image_filter = None
+# Set up font and image size
+font_path = r"C:\Users\Saif Islam\Desktop\New folder\ARIALNB.TTF"
+font_size = 24
+img_width = 1200
+img_height = 630
 
-image = create_image(text, font_path, font_size, width, height, bg_color, text_color, line_width, line_color, blur_radius, image_filter)
-image.save("output.png")
+# Create image and draw object
+img = Image.new("RGB", (img_width, img_height), color=(255, 255, 255))
+draw = ImageDraw.Draw(img)
+
+# Set up font
+font = ImageFont.truetype(font_path, font_size)
+
+# Wrap text and calculate text size
+wrapper = textwrap.TextWrapper(width=50)
+text_lines = wrapper.wrap(text=text)
+text_size = draw.textsize("\n".join(text_lines), font=font)
+
+# Calculate starting position for text drawing
+text_x = (img_width - text_size[0]) // 2
+text_y = (img_height - text_size[1]) // 2
+
+# Draw text on image
+for line in text_lines:
+    draw.text((text_x, text_y), line, font=font, fill=(0, 0, 0))
+    text_y += font_size
+
+# Save image to file
+img.save("output.jpg")
